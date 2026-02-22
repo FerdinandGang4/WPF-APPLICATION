@@ -3,10 +3,78 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BankingApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Banking Dashboard" Height="520" Width="980" MinHeight="480" MinWidth="860">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Window.Resources>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
+        <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12">
+            <TextBlock Text="Customer Dashboard"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+
+            <Button Content="Refresh"
+                    Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Right"
+                    Padding="14,6"
+                    Margin="12,0,0,0"
+                    DockPanel.Dock="Right" />
+        </DockPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Accounts" Grid.Column="0" Margin="0,0,8,0">
+                <DataGrid ItemsSource="{Binding Accounts}"
+                          SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Number" Binding="{Binding AccountNumber}" Width="*" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" />
+                        <DataGridTextColumn Header="Balance" Binding="{Binding Balance, StringFormat={}{0:C}}" Width="*" />
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <GroupBox Header="Recent Transactions" Grid.Column="1" Margin="8,0,0,0">
+                <DataGrid ItemsSource="{Binding RecentTransactions}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date (UTC)" Binding="{Binding TimestampUtc, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="1.5*" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" />
+                        <DataGridTextColumn Header="Reference" Binding="{Binding Reference}" Width="2*" />
+                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat={}{0:C}}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+
+        <DockPanel Grid.Row="2" Margin="0,12,0,0">
+            <ProgressBar Height="12"
+                         Width="180"
+                         IsIndeterminate="True"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <TextBlock Text="{Binding StatusMessage}" Margin="12,0,0,0" VerticalAlignment="Center" />
+        </DockPanel>
     </Grid>
 </Window>
