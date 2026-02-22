@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using BankingApp.Services;
 using BankingApp.ViewModels;
 
 namespace BankingApp;
@@ -9,15 +8,21 @@ namespace BankingApp;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    private readonly DashboardViewModel _viewModel;
+
+    public MainWindow(DashboardViewModel viewModel)
     {
         InitializeComponent();
 
-        var viewModel = new DashboardViewModel(
-            new InMemoryAccountService(),
-            new InMemoryTransactionService());
+        _viewModel = viewModel;
+        DataContext = _viewModel;
 
-        DataContext = viewModel;
-        Loaded += async (_, _) => await viewModel.LoadAsync();
+        Loaded += OnLoaded;
+    }
+
+    private async void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= OnLoaded;
+        await _viewModel.LoadAsync();
     }
 }
