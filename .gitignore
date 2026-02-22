@@ -1,0 +1,89 @@
+############################################
+# .NET / Visual Studio / WPF (.NET 8)
+############################################
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio cache
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / ReSharper
+.idea/
+*.DotSettings.user
+
+############################################
+# .NET SDK / NuGet
+############################################
+
+.dotnet/
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+.nuget/packages/
+
+############################################
+# OS generated files
+############################################
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+############################################
+# WPF / XAML Designer
+############################################
+
+*.Blend.cs
+*.Blend.vb
+
+############################################
+# Logs & diagnostics
+############################################
+
+*.log
+logs/
+diagnostics/
+
+############################################
+# Local configuration / secrets
+############################################
+
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+
+############################################
+# Test artifacts
+############################################
+
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+############################################
+# Publish output
+############################################
+
+publish/
+artifacts/
+
+############################################
+# Temporary files
+############################################
+
+*.tmp
+*.temp
+*.bak
+*.swp
