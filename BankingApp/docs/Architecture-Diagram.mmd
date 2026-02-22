@@ -1,0 +1,92 @@
+﻿flowchart LR
+  %% WPF Banking Application - High-Level Architecture
+
+  subgraph XC[Cross-Cutting Concerns]
+    SEC[Security\nPassword Hashing\nRBAC\nData Masking]
+    REL[Reliability\nGlobal Exception Handling\nStructured Logging]
+  end
+
+  subgraph P[Presentation Layer (WPF + MVVM)]
+    V[Views\nLogin, Dashboard, Transactions, Transfers, Payees]
+    VM[ViewModels\nINotifyPropertyChanged\nICommand]
+    V --> VM
+  end
+
+  subgraph A[Application Layer (Use Cases)]
+    AUTH[IAuthenticationService]
+    ACC[IAccountService]
+    TX[ITransactionService]
+    TR[ITransferService]
+    PAY[IPayeeService]
+    ST[IStatementService]
+    ADM[IAdminService (Optional)]
+  end
+
+  subgraph D[Domain Layer]
+    E[Entities\nUser, CustomerProfile, Account,\nTransaction, Transfer, Payee, AuditLog]
+    R[Business Rules\nTransfer Invariants\nValidation Policies\nAuthorization Rules]
+    E <--> R
+  end
+
+  subgraph I[Infrastructure Layer]
+    REPO[Repositories + EF Core DbContext]
+    HASH[Password Hasher\nPBKDF2/BCrypt]
+    LOG[Structured Logger]
+    EXP[Export Adapters\nCSV/PDF]
+    CFG[Configuration Provider]
+  end
+
+  DB[(SQLite Database)]
+
+  VM --> AUTH
+  VM --> ACC
+  VM --> TX
+  VM --> TR
+  VM --> PAY
+  VM --> ST
+  VM --> ADM
+
+  AUTH --> R
+  ACC --> R
+  TX --> R
+  TR --> R
+  PAY --> R
+  ST --> R
+  ADM --> R
+
+  AUTH --> REPO
+  ACC --> REPO
+  TX --> REPO
+  TR --> REPO
+  PAY --> REPO
+  ST --> REPO
+  ADM --> REPO
+
+  AUTH --> HASH
+  AUTH --> LOG
+  TR --> LOG
+  ADM --> LOG
+  ST --> EXP
+
+  REPO --> DB
+
+  SEC -. applies to .- P
+  SEC -. applies to .- A
+  SEC -. applies to .- D
+  SEC -. applies to .- I
+
+  REL -. applies to .- P
+  REL -. applies to .- A
+  REL -. applies to .- D
+  REL -. applies to .- I
+
+  subgraph T[Testing]
+    UT[Unit Tests\nViewModels + Services + Validators]
+    MT[Mocked Interfaces\nRepositories + Infrastructure]
+    AT[Atomic Transfer Tests\nExport Correctness Tests]
+  end
+
+  T -. verifies .- P
+  T -. verifies .- A
+  T -. verifies .- D
+  T -. verifies .- I
